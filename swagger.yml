@@ -1,0 +1,81 @@
+openapi: 3.0.0
+
+info:
+  title: "Shopa API"
+  description: "An Api to keep track of grocery shopping"
+  version: "1.0.0"
+
+servers:
+  - url: "/api"
+
+# The 'components' section is used for holding schemas and other reusable parts of the API specification
+components:
+# The 'schemas' keyword is used for defining the data types
+  schemas:
+  # Defining a 'Person' object with two properties
+    User:
+    # Indicating that it's an 'object' type
+      type: "object"
+      # 'required' lists the properties that must be present in the object
+      required:
+        - "first_name" # In this case, 'lname' is required
+        - "last_name"
+        - "email"
+        - "password"
+      # 'properties' lists the properties of the object and their types
+      properties:
+        first_name:
+          type: "string"
+        last_name:
+          type: "string"
+        email:
+          type: "string"
+        password:
+          type: "string"
+  parameters:
+    id:
+      name: "id"
+      description: "Unique id of user"
+      in: path
+      required: true
+      schema:
+        type: "integer"
+    
+    grocery_id:
+      name: "grocery_id"
+      description: "unique identifier to get groceries"
+      in: path
+      required: true
+      schema:
+        type: "integer"
+
+paths:
+  /users:
+    get:
+      operationId: "users.read_all"
+      tags:
+        - users
+      summary: "Read the list of users"
+      responses:
+        "200":
+          description: "Successfully retrieved users"
+
+    
+    post: 
+      operationId: "users.create"
+      tags:
+        - users
+      summary: "Create user"
+      requestBody:
+        description: "user to create"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "user"
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: "User successfully created"
+
+  

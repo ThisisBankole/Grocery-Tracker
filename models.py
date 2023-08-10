@@ -1,0 +1,68 @@
+from datetime import datetime
+from config import db, ma, bcrypt, migrate
+from marshmallow import fields
+
+# This defines the Grocery class. 
+# Inheriting from db.Model from config.py file gives User the SQLAlchemy features to connect to the database and access its tables.
+class Grocery(db.Model):
+    __tablename__ = "grocery"  # This connects the class definition to the user database table.
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id")) 
+    item = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+
+class GrocerySchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Grocery
+        load_instance = True
+        sqla_session = db.session
+        include_fk = True
+        
+
+
+# This defines the User class. 
+# Inheriting from db.Model from config.py file gives User the SQLAlchemy features to connect to the database and access its tables.
+class User(db.Model):
+    __tablename__ = "user"  # This connects the class definition to the user database table.
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow) 
+    
+    groceries = db.relationship (
+        Grocery,
+        backref = "User",
+        cascade = "all, delete, delete-orphan",
+        single_parent = True,
+        order_by = "desc(Grocery.timestamp)"
+        
+    )
+    
+    
+class UserCreateSchema(ma.SQLAlchemyAutoSchema):
+    password = fields.Str(load_only=True)
+    class Meta:
+        model = User
+        load_instance = True
+        sqla_session = db.session
+        include_relationships = False
+
+class UserDetailSchema(ma.SQLAlchemyAutoSchema):
+    password = fields.Str(load_only=True)
+    groceries = fields.Nested(GrocerySchema, many=True)
+    class Meta:
+        model = User
+        load_instance = True
+        sqla_session = db.session
+        include_relationships = True
+        
+    
+    
+user_create_schema = UserCreateSchema()
+user_detail_schema = UserDetailSchema(many=True)
+grocery_schema = GrocerySchema()
+
+
