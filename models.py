@@ -1,5 +1,5 @@
 from datetime import datetime
-from config import db, ma, bcrypt, migrate
+from config import db, ma, bcrypt, migrate, UserMixin
 from marshmallow import fields
 
 # This defines the Grocery class. 
@@ -23,7 +23,7 @@ class GrocerySchema(ma.SQLAlchemyAutoSchema):
 
 # This defines the User class. 
 # Inheriting from db.Model from config.py file gives User the SQLAlchemy features to connect to the database and access its tables.
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "user"  # This connects the class definition to the user database table.
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
