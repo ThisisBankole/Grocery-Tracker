@@ -78,4 +78,41 @@ paths:
         "201":
           description: "User successfully created"
 
+# login
+  /auth/login:
+    post: 
+      operationId: "users.login"
+      tags:
+        - users
+      summary: "Authenticate user"
+      requestBody:
+        description: "User credentials"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "email"
+                - "password"
+              properties:
+                email:
+                  type: "string"
+                password:
+                  type: "string"
+      responses:
+        "200":
+          description: "Successfully authenticated"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  token:
+                    type: "string"
+        "401":
+          description: "Invalid credentials"
+
+            
+
   

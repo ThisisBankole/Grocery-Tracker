@@ -1,8 +1,8 @@
 import os
 from flask import render_template
+import requests
 from config import bcrypt, app
 import config
-from users import create
 from models import User, Grocery
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -10,9 +10,10 @@ from wtforms import StringField, PasswordField, DateField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
+from shared import bcrypt, secret_key
 
 
-secret_key = app.config["SECRET_KEY"]
+#secret_key = app.config["SECRET_KEY"]
 
 app = config.connex_app
 # 
@@ -28,6 +29,8 @@ class RegisterForm(FlaskForm):
 
 
 
+
+
 #This is the route for the homepage
 @app.route("/")
 def home():
@@ -38,22 +41,37 @@ def home():
 @app.route("/register", methods=["GET", "POST"])
 def register():
    form = RegisterForm()
+   
    if request.method == 'POST' and form.validate_on_submit():
       hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+      
       user_data = {
                "first_name": form.first_name.data,
                "last_name": form.last_name.data,
                "email": form.email.data,
                "password": hashed_password  # Encrypting password before sending to the API.
          }
-      created_user = create(user_data)
-      if created_user:
+      
+      #created_user = create(user_data)
+      # request.method == 'POST' and
+      
+      response = requests.post('http://localhost:8000/api/users', json=user_data, timeout=10)
+      #print(response.text)
+      if response.status_code == 200:
          flash('Registration successful!', 'success')
          return redirect(url_for('home'))
       else:
          flash('Registration failed', 'warning' )
-         
+      
    return render_template('register.html', form=form)
+      
+      #if created_user:
+         #flash('Registration successful!', 'success')
+         # return redirect(url_for('home'))
+      # else:
+         # flash('Registration failed', 'warning' )
+         
+   
    
 
 if __name__ == "__main__":

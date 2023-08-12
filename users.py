@@ -1,6 +1,9 @@
 from config import db
 from flask import abort, make_response
 from models import User, user_create_schema, user_detail_schema
+import jwt
+from shared import secret_key, bcrypt
+from datetime import datetime, timedelta
 
 
 # This is a function used for returning the list of users. GET/api/users | 
@@ -35,5 +38,20 @@ def create(user):
         )
     
 
+#This is a function used for autheticating users
+
+def login(credentials):
+    existing_user = User.query.filter_by(email=credentials["email"]).first()
+    hashed_password = bcrypt.check_password_hash(existing_user.password, credentials["password"])
+    
+    if existing_user and hashed_password:
+        token = jwt.encode({
+           'user_id': User.id, 
+           'exp' : datetime.utcnow() + timedelta(hours=24)
+        }, secret_key, algorithm = 'HS256')
+        return {"token": token}
+    
+    else:
+        abort(401, "Invalid credentials")
 
 

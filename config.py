@@ -13,7 +13,6 @@ from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 
 
-
 load_dotenv()
 
 # This creates the variable basedir pointing to the directory that the program is running in.
