@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In</title>
+</head>
+<body>
+    <h1>
+        Log In
+    </h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.email }}
+        {{ form.password }}
+        {{ form.submit }}
+    </form>
+    <br>
+    <a href="{{url_for('register')}}"> Don't have an account? Sign up</a>
+</body>
+</html>

@@ -1,6 +1,7 @@
 from datetime import datetime
-from config import db, ma, bcrypt, migrate, UserMixin
+from config import db, ma, migrate, UserMixin
 from marshmallow import fields
+from shared import bcrypt
 
 # This defines the Grocery class. 
 # Inheriting from db.Model from config.py file gives User the SQLAlchemy features to connect to the database and access its tables.
@@ -9,7 +10,11 @@ class Grocery(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id")) 
     item = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    quantity = db.Column(db.Integer)
+    price = db.Column(db.Float)
+
+    
     
 
 class GrocerySchema(ma.SQLAlchemyAutoSchema):
@@ -59,7 +64,13 @@ class UserDetailSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session
         include_relationships = True
         
+ 
     
+class GroceryItem(db.Model):
+    __tablename__ = "grocery_item"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False, unique=True)  # store the unique item name
+
     
 user_create_schema = UserCreateSchema()
 user_detail_schema = UserDetailSchema(many=True)

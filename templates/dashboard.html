@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <br>
+    <hr>
+    
+    <form action="{{ url_for('dashboard') }}" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.item.label }} <br>
+        {{ form.item }} <br>
+        {{ form.quantity.label }} <br>
+        {{ form.quantity }} <br>
+        {{ form.price.label }} <br>
+        {{ form.price }}
+        {{ form.submit }}
+    </form>
+    
+    <br>
+    <hr>
+    
+    <h3>Past Orders</h3>
+    <hr>
+
+    {% for date, items in grouped_groceries.items() %}
+        {% if items %}
+            <h4>
+            {% if date == now %}
+                Today
+            <br>
+            {% elif date == yesterday %}
+                Yesterday
+            <br>
+            {% else %}
+                {{ date }}
+            {% endif %}
+            </h4>
+
+            {% include 'table_rendering.html' %}
+
+        {% endif %}
+    {% endfor %}
+    
+    <a href="{{url_for('logout')}}">Log out</a>
+</body>
+</html>

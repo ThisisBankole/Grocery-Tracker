@@ -32,6 +32,32 @@ components:
           type: "string"
         password:
           type: "string"
+
+    Grocery: 
+      type: "object"
+      required:
+        - "item"
+      properties:
+        item:
+          type: "string"
+          description: "The name of the grocery item"
+        quantity:
+          type: "integer"
+          description: "The number of items"
+        price: 
+          type: "integer"
+          description: "The amount it cost"
+        created_at:
+          type: "string"
+          format: "date-time"
+          description: "The date and time when the grocery item was created"
+        updated_at:
+          type: "string"
+          format: "date-time"
+          description: "The date and time when the grocery item was updated"
+
+
+
   parameters:
     id:
       name: "id"
@@ -48,6 +74,12 @@ components:
       required: true
       schema:
         type: "integer"
+    
+    
+
+
+
+
 
 paths:
   /users:
@@ -75,13 +107,13 @@ paths:
               x-body-name: "user"
               $ref: "#/components/schemas/User"
       responses:
-        "201":
+        "200":
           description: "User successfully created"
 
 # login
   /auth/login:
     post: 
-      operationId: "users.login"
+      operationId: "users.login_logic"
       tags:
         - users
       summary: "Authenticate user"
@@ -113,6 +145,82 @@ paths:
         "401":
           description: "Invalid credentials"
 
-            
 
-  
+
+
+# Grocery Creation
+  /grocery:
+
+    get:
+      operationId: "groceries.read_items"
+      tags:
+        - groceries
+      summary: "read all items"
+      responses:
+        "200":
+          description: "Items successfully retrieved"
+
+
+    post: 
+      operationId: "groceries.add"
+      tags:
+        - groceries
+      summary: "create item"
+      requestBody:
+        description: "Creaing a grocery item"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "grocery"
+              $ref: "#/components/schemas/Grocery"
+      responses:
+        "200":
+          description: "Item successfully created"
+
+
+            
+  /grocery/{grocery_id}:
+    get:
+      operationId: "groceries.read_item"
+      tags:
+        - groceries
+      summary: "Read item by id"
+      responses:
+        "200":
+          description: "Item successfully retrieved"
+          content: 
+            application/json:
+              schema:
+                $ref: "#/components/parameters/grocery_id"
+
+    put:
+      operationId: "groceries.update"
+      tags:
+        - groceries
+      summary: "Update item"
+      parameters:
+        - $ref: "#/components/parameters/grocery_id"
+      responses:
+        "200":
+          description: "item successfully updated"
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              x-body-name: "grocery"
+              properties:
+                content: 
+                  type: "string"
+
+
+    delete:
+      operationId: "groceries.delete"
+      tags:
+        - groceries
+      summary: "Delete an item"
+      parameters:
+        - $ref: "#/components/parameters/grocery_id"
+      responses:
+        "200":
+          description: "successfully deleted"

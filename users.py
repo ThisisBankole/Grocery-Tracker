@@ -40,13 +40,13 @@ def create(user):
 
 #This is a function used for autheticating users
 
-def login(credentials):
+def login_logic(credentials):
     existing_user = User.query.filter_by(email=credentials["email"]).first()
     hashed_password = bcrypt.check_password_hash(existing_user.password, credentials["password"])
     
     if existing_user and hashed_password:
         token = jwt.encode({
-           'user_id': User.id, 
+           'user_id': existing_user.id, 
            'exp' : datetime.utcnow() + timedelta(hours=24)
         }, secret_key, algorithm = 'HS256')
         return {"token": token}

@@ -19,8 +19,9 @@ load_dotenv()
 basedir = pathlib.Path(__file__).parent.resolve()
 # This uses the basedir variable to create the Connexion app instance and give it the path to the directory that contains your specification file.
 connex_app = connexion.App(__name__, specification_dir=basedir)
-
 app = connex_app.app
+
+
 # This tells SQLAlchemy to use SQLite as the database and a file named shopa.db in the current directory as the database file.
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{basedir / 'shopa.db'}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -39,12 +40,7 @@ class User(UserMixin):
         self.id = dictionary['id']
         self.email = dictionary['email']
         self.password = dictionary['password']
-
-#Initializes a new Flask web application instance.
-#Initializes the Bcrypt extension for the Flask app. 
-# This extension provides Bcrypt hashing utilities for a Flask application.
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
+ 
 
 # Uses the load_dotenv function to load environment variables from a .env file (if it exists) into the environment. 
 # This allows the app to access sensitive or configuration data without hardcoding it.
@@ -62,8 +58,9 @@ def after_request(response):
 #Initializes the LoginManager which helps manage user sessions for a Flask app.
 # Specifies that the login view should be used for logging users in.
 login_manager = LoginManager()
-login_manager.init_app(app)
 login_manager.login_view = "login"
+login_manager.init_app(app)
+
 
 #Defines a user loader function. When Flask-Login needs to know about a specific user, it uses this function. 
 # The function queries the database for the user by user_id and returns a User object.
