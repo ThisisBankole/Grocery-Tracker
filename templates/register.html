@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
 </head>
 
 <body class="bg-light">
@@ -17,20 +19,63 @@
                     <div class="card-header bg-primary text-white text-center">
                         <h2>Register</h2>
                     </div>
+                                    <!-- Flash messages section starts here -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    <!-- Flash messages section ends here -->
                     <div class="card-body">
-                        <form action="" method="post">
+                        <form action="{{ url_for('register') }}" method="post">
                             {{ form.hidden_tag() }}
                             <div class="form-group">
                                 {{ form.first_name.label }} {{ form.first_name(class="form-control") }}
+                                {% if form.first_name.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.first_name.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                             </div>
+
+
                             <div class="form-group">
                                 {{ form.last_name.label }} {{ form.last_name(class="form-control") }}
+                                {% if form.last_name.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.last_name.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                             </div>
+
+
                             <div class="form-group">
                                 {{ form.email.label }} {{ form.email(class="form-control") }}
+                                {% if form.email.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.email.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                             </div>
+
+
                             <div class="form-group">
                                 {{ form.password.label }} {{ form.password(class="form-control") }}
+                                {% if form.password.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.password.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                             </div>
                             <div class="form-group">
                                 {{ form.submit(class="btn btn-primary btn-block") }}
@@ -51,6 +96,18 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Check if a success message exists
+            if ($('.alert-success').length > 0) {
+                setTimeout(function() {
+                    window.location.href = "{{ url_for('login') }}";
+                }, 2000);  // 5000 milliseconds = 5 seconds
+            }
+        });
+    </script>
+    
 </body>
 
 </html>
