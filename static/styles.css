@@ -1,0 +1,37 @@
+.table-responsive {
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+    }
+
+    .table-responsive .table {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .table-responsive .table thead,
+    .table-responsive .table tbody tr {
+        display: block;
+    }
+
+    .table-responsive .table tbody tr {
+        margin-bottom: 0.625rem;
+    }
+
+    .table-responsive .table td,
+    .table-responsive .table th {
+        display: block;
+        text-align: right;
+    }
+
+    .table-responsive .table td::before,
+    .table-responsive .table th::before {
+        content: attr(data-label);
+        float: left;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+}
