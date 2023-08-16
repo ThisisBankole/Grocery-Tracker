@@ -8,7 +8,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_bcrypt import Bcrypt
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from shared import bcrypt, secret_key
-from users import login_logic
+from users import login_logic, create
 from groceries import add, read_items, update, delete
 from forms import RegisterForm, LoginForm, GroceryForm
 from datetime import datetime, timedelta
@@ -85,9 +85,9 @@ def register():
          }
       
       
-      response = requests.post('http://localhost:8000/api/users', json=user_data, timeout=10)
+      response = create(user_data)
          #print(response.text)
-      if response.status_code == 200:
+      if response:
          flash('Registration successful!', 'success')
          return redirect(url_for('login'))
       else:
