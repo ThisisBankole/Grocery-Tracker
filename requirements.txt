@@ -23,6 +23,7 @@ flask-marshmallow==0.14.0
 Flask-Migrate==4.0.4
 Flask-SQLAlchemy==3.0.5
 Flask-WTF==1.1.1
+gunicorn==21.2.0
 idna==3.4
 inflection==0.5.1
 ipykernel==6.25.1
