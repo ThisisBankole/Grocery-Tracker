@@ -2,33 +2,52 @@
     overflow-x: auto;
 }
 
-.table-responsive .table {
+.table {
     width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
     border-collapse: collapse;
 }
 
-.table-responsive .table th,
-.table-responsive .table td {
+.table th, .table td {
     padding: 0.75rem;
-    vertical-align: top;
-    border-top: 1px solid #dee2e6;
+    border: 1px solid #dee2e6;
 }
 
-.table-responsive .table thead th {
+.table thead th {
     vertical-align: bottom;
-    border-bottom: 2px solid #dee2e6;
+    background-color: #f5f5f5;
 }
 
 .table-responsive .table tbody + tbody {
     border-top: 2px solid #dee2e6;
 }
 
-/* Media query to ensure text in cells doesn't break awkwardly */
-@media (max-width: 768px) {
+.action-buttons .btn {
+    margin-right: 5px;
+}
+
+/* For mobile */
+@media only screen and (max-width: 768px) {
     .table-responsive .table td,
     .table-responsive .table th {
-        white-space: nowrap;
+        /* Changing these to block for mobile only */
+        display: block;
+        text-align: right;
+    }
+
+    .table-responsive .table td::before,
+    .table-responsive .table th::before {
+        content: attr(data-label);
+        float: left;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .action-buttons form {
+        margin: 0;
     }
 }
