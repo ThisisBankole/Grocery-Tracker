@@ -1,42 +1,42 @@
-{% set ns = namespace(total_amount=0) %}
-<table border="1">
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Amount</th>
-            <th>Actions</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in items %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
             <tr>
-                <td>{{ item.item }}</td>
-                <td>{{ item.quantity if item.quantity is not none else 0 }}</td>
-                <td>
-                    {% if item.quantity != 0 %}
-                        {{ "{:.2f}".format((item.price or 0) / (item.quantity or 1)) }}
-                    {% else %}
-                        0.00
-                    {% endif %}
-                </td>
-                <td>{{ item.price if item.price is not none else 0 }}</td>
-                <td>
-                    <a href="{{ url_for('edit_grocery', grocery_id=item.id) }}">Edit</a>  <br> <br>
-                    <form action="{{ url_for('delete_grocery', grocery_id=item.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                        <input type="submit" value="Delete">
-                    </form>
-                    
-                </td>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Amount</th>
+                <th>Actions</th>
             </tr>
-            {% set ns.total_amount = ns.total_amount + (item.price or 0) %}
-        {% endfor %}
-        <tr>
-            <td colspan="3">Total</td>
-            <td>{{ "{:.2f}".format(ns.total_amount) }}</td>
-        </tr>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% set ns = namespace(total_amount=0) %}
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.item }}</td>
+                    <td>{{ item.quantity if item.quantity is not none else 0 }}</td>
+                    <td>
+                        {% if item.quantity != 0 %}
+                            {{ "{:.2f}".format((item.price or 0) / (item.quantity or 1)) }}
+                        {% else %}
+                            0.00
+                        {% endif %}
+                    </td>
+                    <td>{{ item.price if item.price is not none else 0 }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_grocery', grocery_id=item.id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <form action="{{ url_for('delete_grocery', grocery_id=item.id) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this item?');" class="mt-2">
+                            <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                        </form>
+                    </td>
+                </tr>
+                {% set ns.total_amount = ns.total_amount + (item.price or 0) %}
+            {% endfor %}
+            <tr>
+                <td colspan="3" class="text-right font-weight-bold">Total</td>
+                <td colspan="2">{{ "{:.2f}".format(ns.total_amount) }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 <br>

@@ -12,6 +12,7 @@ from users import login_logic
 from groceries import add, read_items, update, delete
 from forms import RegisterForm, LoginForm, GroceryForm
 from datetime import datetime, timedelta
+from edamam_api import get_groceries_from_edamam
 #import logging
 
 
@@ -173,6 +174,15 @@ def delete_grocery(grocery_id):
     return redirect(url_for('dashboard'))
 
 
+
+# Search 
+@app.route("/search")
+def search_groceries():
+    query = request.args.get('query')
+    groceries = get_groceries_from_edamam(query)
+    return jsonify({'groceries': groceries})
+ 
+ 
 @app.context_processor
 def inject_datetime():
     return {'datetime': datetime, 'timedelta': timedelta}  

@@ -4,25 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Item</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Edit Item</h1>
-    <br>
-    <hr>
-    <form action="{{ url_for('edit_grocery', grocery_id=item.id) }}" method="post">
-        {{ form.hidden_tag() }}
-        {{ form.item.label }} <br>
-        {{ form.item(value=item.item) }} <br>
-        {{ form.quantity.label }} <br>
-        {{ form.quantity(value=item.quantity) }} <br>
-        {{ form.price.label }} <br>
-        {{ form.price(value=item.price) }} <br>
-        
-        <input type="submit" value="Update">
+<body class="bg-light">
 
-    </form>
-    <br>
-    <hr>
-    <a href="{{url_for('dashboard')}}">Back to Dashboard</a>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Edit Item</h2>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('edit_grocery', grocery_id=item.id) }}" method="post" class="form">
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            <label for="item">{{ form.item.label }}</label>
+                            {{ form.item(value=item.item, class_='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">{{ form.quantity.label }}</label>
+                            {{ form.quantity(value=item.quantity, class_='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            <label for="price">{{ form.price.label }}</label>
+                            {{ form.price(value=item.price, class_='form-control') }}
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Update" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <a href="{{url_for('dashboard')}}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<!-- Optional JavaScript; Bootstrap JS, jQuery, and Popper.js -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

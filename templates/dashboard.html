@@ -1,51 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #search-results {
+            display: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            transition: box-shadow 0.3s;
+        }
+    
+        #search-results:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+    
+        #search-results ul.list-group li {
+            cursor: pointer; /* Changes cursor to a hand (pointer) */
+        }
+    
+        #search-results ul.list-group li:hover {
+            background-color: rgba(0, 123, 255, 0.1); /* A light blue hover effect */
+        }
+    </style>
 </head>
-<body>
-    <h1>Dashboard</h1>
-    <br>
-    <hr>
-    
-    <form action="{{ url_for('dashboard') }}" method="post">
-        {{ form.hidden_tag() }}
-        {{ form.item.label }} <br>
-        {{ form.item }} <br>
-        {{ form.quantity.label }} <br>
-        {{ form.quantity }} <br>
-        {{ form.price.label }} <br>
-        {{ form.price }}
-        {{ form.submit }}
-    </form>
-    
-    <br>
-    <hr>
-    
-    <h3>Past Orders</h3>
-    <hr>
 
-    {% for date, items in grouped_groceries.items() %}
+<body class="bg-light p-5">
+
+    <div class="container">
+        <h1 class="mb-4">Dashboard</h1>
+
+        <form action="{{ url_for('dashboard') }}" method="post" class="mb-4">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.item.label }}
+                {{ form.item(class="form-control") }}
+            </div>
+
+            <div id="search-results" class="border p-2" style="max-height: 150px; overflow-y: auto;"></div>
+
+            <div class="form-group">
+                {{ form.quantity.label }}
+                {{ form.quantity(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.price.label }}
+                {{ form.price(class="form-control") }}
+            </div>
+
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+
+        <h3>Past Orders</h3>
+        <hr>
+
+        {% for date, items in grouped_groceries.items() %}
         {% if items %}
-            <h4>
+        <h4>
             {% if date == now %}
-                Today
-            <br>
+            Today
             {% elif date == yesterday %}
-                Yesterday
-            <br>
+            Yesterday
             {% else %}
-                {{ date }}
+            {{ date }}
             {% endif %}
-            </h4>
+        </h4>
 
-            {% include 'table_rendering.html' %}
-
+        {% include 'table_rendering.html' %}
         {% endif %}
-    {% endfor %}
-    
-    <a href="{{url_for('logout')}}">Log out</a>
+        {% endfor %}
+
+        <a href="{{url_for('logout')}}" class="btn btn-danger mt-4">Log out</a>
+    </div>
+
+<script>
+        let debounceTimeout;
+        const searchResultsBox = document.getElementById('search-results');
+        const itemInput = document.getElementById('item');
+
+        itemInput.addEventListener('keyup', function() {
+            clearTimeout(debounceTimeout); // Clear any previously set timeouts
+            const query = this.value;
+
+            debounceTimeout = setTimeout(() => {
+                if (query.length > 2) {
+                    fetch(`/search?query=${query}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.groceries && data.groceries.length > 0) {
+                                let resultsHTML = '<ul class="list-group">';
+                                data.groceries.forEach(grocery => {
+                                    resultsHTML += `<li class="list-group-item">${grocery}</li>`;
+                                });
+                                resultsHTML += '</ul>';
+                                searchResultsBox.innerHTML = resultsHTML;
+                                searchResultsBox.style.display = 'block'; // Show the search results box
+                            } else {
+                                searchResultsBox.style.display = 'none'; // Hide the box if no results
+                            }
+                        });
+                } else {
+                    searchResultsBox.style.display = 'none'; // Hide the box if query length is 2 or less
+                }
+            }, 10); // Wait for 300ms after user stops typing to make the API call
+        });
+
+        // This listens for clicks on any list item and populates the input field
+        searchResultsBox.addEventListener('click', function(event) {
+            if (event.target.tagName.toLowerCase() === 'li') {
+                itemInput.value = event.target.textContent;
+                this.innerHTML = ''; // clear the search results
+                this.style.display = 'none'; // Hide the box after selecting an item
+            }
+        });
+
+</script>
+
+    <!-- Bootstrap JS (optional but required for some Bootstrap components) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
