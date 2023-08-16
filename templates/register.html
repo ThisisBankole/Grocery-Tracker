@@ -1,25 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>Register Page</h1> <br> <hr>
-   <br>
-   <form action="" method="post">
-    {{ form.hidden_tag() }}
-    {{ form.first_name }}
-    {{ form.last_name }}
-    {{ form.email }}
-    {{ form.password }}
-    {{ form.submit }}
 
-</form>
-<br>
-<a href="{{url_for('login')}}">Log in here</a>
-<br> <br>
-<a href="{{url_for('home')}}">Home</a>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2>Register</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {{ form.hidden_tag() }}
+                            <div class="form-group">
+                                {{ form.first_name.label }} {{ form.first_name(class="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.last_name.label }} {{ form.last_name(class="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.email.label }} {{ form.email(class="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.password.label }} {{ form.password(class="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-primary btn-block") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{url_for('login')}}" class="btn btn-link">Log in here</a>
+                    <a href="{{url_for('home')}}" class="btn btn-link">Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
