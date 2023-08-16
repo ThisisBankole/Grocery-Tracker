@@ -1,6 +1,8 @@
 .env
-shopa.db
-script.py
-init_db.py
-/alembic
+
 scraper.py
+
+script.py
+/alembic
+shopa.db
+init_db.py
