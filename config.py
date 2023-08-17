@@ -11,6 +11,7 @@ from wtforms import StringField, PasswordField, DateField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
+import os
 
 
 load_dotenv()
@@ -23,7 +24,7 @@ app = connex_app.app
 
 
 # This tells SQLAlchemy to use SQLite as the database and a file named shopa.db in the current directory as the database file.
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{basedir / 'shopa.db'}"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 # This initializes SQLAlchemy by passing the app configuration information to SQLAlchemy and assigning the result to a db variable.
