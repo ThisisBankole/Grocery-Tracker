@@ -1,8 +1,7 @@
 .env
-
 scraper.py
-
 script.py
-/alembic
+alembic/
 shopa.db
 init_db.py
+venv/
