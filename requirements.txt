@@ -23,7 +23,7 @@ inflection==0.5.1
 is-disposable-email==1.0.0
 itsdangerous==2.1.2
 Jinja2==3.1.2
-jsonschema==<some_other_version>
+jsonschema>=4.0.0,<5.0.0
 jsonschema-specifications==2023.7.1
 Mako==1.2.4
 MarkupSafe==2.1.3
