@@ -56,7 +56,23 @@ components:
           format: "date-time"
           description: "The date and time when the grocery item was updated"
 
+# The schena for Receipt that will be used to create a receipt. It will contain the grocery items and the price as well as created_at and updated_at
+    Receipt:
+      type: "object"
+      properties:
+        items:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Grocery"
+        price:
+          type: "integer"
+          description: "The total price of all the grocery items"
+        created_at:
+          type: "string"
+          format: "date-time"
+          description: "The date and time when the receipt was created"
 
+# The 'parameters' keyword is used for defining reusable parameters
 
   parameters:
     id:
@@ -224,3 +240,24 @@ paths:
       responses:
         "200":
           description: "successfully deleted"
+
+  #Create a path for adding receipts
+
+  /receipts:
+    post:
+      operationId: "receipts.process_receipts_and_add_groceries"
+      tags:
+        - receipts
+      summary: "Create a receipt"
+      requestBody:
+        description: "Creating a receipt"
+        required: true
+        content:
+          application/json:
+            schema:
+              x-body-name: "receipt"
+              $ref: "#/components/schemas/Receipt"
+      responses:
+        "200":
+          description: "Receipt successfully created"
+

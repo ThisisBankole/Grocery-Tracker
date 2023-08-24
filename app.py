@@ -1,5 +1,5 @@
 import os
-from flask import render_template
+from flask import render_template, send_from_directory
 import requests
 from config import app, login_manager, db
 import config
@@ -13,12 +13,14 @@ from groceries import add, read_items, update, delete
 from forms import RegisterForm, LoginForm, GroceryForm
 from datetime import datetime, timedelta
 from edamam_api import get_groceries_from_edamam
-#import logging
-
+import pytesseract
+from PIL import Image
+from receipts import process_receipts_and_add_groceries
+import re
 
 #logging.basicConfig(level=logging.DEBUG)
 
-
+   
 
 config.connex_app.add_api(config.basedir / "swagger.yml")
 
@@ -42,20 +44,30 @@ def login():
    form = LoginForm()
    
    if request.method == 'POST' and form.validate_on_submit():
+      user = User.query.filter_by(email=form.email.data).first()
+      
+      # Check if the user exists
+      if not user:
+         flash('Email not registered', 'danger')
+         return render_template('login.html', form=form)
+      
+      
       user_data = {
          "email": form.email.data,
          "password": form.password.data
       }
+      
       response = login_logic(user_data)
+      
+      
       if response and "token" in response:
          token = response.get('token')
          session['token'] = token
-         user = User.query.filter_by(email=form.email.data).first()
          login_user(user)
          flash('Logged in successfully!', 'success')
          return redirect(url_for('dashboard'))
       else:
-         flash('Invalid credentials.', 'danger')
+         flash('Invalid password.', 'danger')
    return render_template('login.html', form=form)
 
 
@@ -102,9 +114,7 @@ def register():
 @login_required
 def dashboard():
    form = GroceryForm()
-   if request.method == "POST":
-      #print(f"Form data: item={form.item.data}, quantity={form.quantity.data}, price={form.price.data}")
-      if form.validate_on_submit():
+   if request.method == "POST" and form.validate_on_submit():
          result = {
             "user_id": current_user.id,
             "item": form.item.data,
@@ -187,6 +197,68 @@ def search_groceries():
 def inject_datetime():
     return {'datetime': datetime, 'timedelta': timedelta}  
 
+
+# Receipts
+@app.route("/upload_receipt", methods=["POST"])
+@login_required
+def upload_receipt():
+   # Access the uploaded image
+   image = request.files['receipt_image']
+   
+   #convert image to text
+   text = pytesseract.image_to_string(Image.open(image))
+   
+   #Parse the receipt to extract grocery details
+   receipt_data = parse_receipt(text)
+   
+   user_id = request.args.get('user_id')
+   try:
+      process_receipts_and_add_groceries(user_id, receipt_data)
+      flash('Receipt uploaded successfully!', 'success')
+   except Exception as e:
+      flash(f'Failed to upload receipt: {str(e)}', 'danger')
+      
+def parse_receipt(new_text):
+   lines = new_text.split('\n')
+   items = []
+   #Define a multiple regex patterns to match the different formats of the receipt
+   patterns = [
+      re.compile(r'(?P<item>[\w\s]+)\s(?P<quantity>\d+)x\s\$(?P<price>[\d.]+)'),
+      #compile a regex pattern to match the format: item $price
+      re.compile(r'(?P<item>[\w\s]+)\s\$(?P<price>[\d.]+)'),
+   ]
+   
+   for line in lines:
+      matched = False
+      for pattern in patterns:
+         match = pattern.match(line)
+         if match:
+            item = match.group('item').strip()
+            quantity = int(match.group('quantity')) if 'quantity' in match.groupdict() else 1
+            price = float(match.group('price'))
+            items.append({
+               'item': item,
+               'quantity': quantity,
+               'price': price
+               })
+            matched = True
+            break
+         
+         # Heuristic fallback if no patterns matched
+         if not matched:
+            parts = line.split()
+            if '$' in parts[-1]:
+               price = float(parts[-1].replace('$', ''))
+               item = ' '.join(parts[:-1])
+               items.append({
+                  'item': item,
+                  'quantity': 1,
+                  'price': price
+                  })
+               
+   return items
+            
+      
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

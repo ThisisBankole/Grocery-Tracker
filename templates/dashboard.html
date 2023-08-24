@@ -38,8 +38,10 @@
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.item.label }}
-                {{ form.item(class="form-control") }}
+                {{ form.item(class="form-control" ) }}
             </div>
+            
+               
 
             <div id="search-results" class="border p-2" style="max-height: 150px; overflow-y: auto;"></div>
 
@@ -50,7 +52,7 @@
 
             <div class="form-group">
                 {{ form.price.label }}
-                {{ form.price(class="form-control") }}
+                {{ form.price(class="form-control" ) }}
             </div>
 
             {{ form.submit(class="btn btn-primary") }}
@@ -119,6 +121,11 @@
                 this.style.display = 'none'; // Hide the box after selecting an item
             }
         });
+
+       
+
+        // ... existing code ...
+
 
 </script>
 

@@ -51,7 +51,6 @@ def login_logic(credentials):
         }, secret_key, algorithm = 'HS256')
         return {"token": token}
     
-    else:
-        abort(401, "Invalid credentials")
+    return None
 
 
