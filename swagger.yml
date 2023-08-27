@@ -126,6 +126,30 @@ paths:
         "200":
           description: "User successfully created"
 
+# A method for changing user password
+    patch:
+      operationId: "users.change_password"
+      tags:
+        - users
+      summary: "Change user password"
+      parameters:
+        - $ref: "#/components/parameters/id"
+      requestBody:
+        description: "User password"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - "password"
+              properties:
+                password:
+                  type: "string"
+      responses:
+        "200":
+          description: "Password successfully changed" 
+
 # login
   /auth/login:
     post: 

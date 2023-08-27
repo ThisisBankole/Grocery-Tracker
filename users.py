@@ -54,3 +54,10 @@ def login_logic(credentials):
     return None
 
 
+
+# This is a function used for changing the password of a user.
+def change_password(user_id, password):
+    user = User.query.filter_by(id=user_id).first()
+    user.password = bcrypt.generate_password_hash(password).decode('utf-8')
+    db.session.commit()
+    return user_create_schema.dump(user)
