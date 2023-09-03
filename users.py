@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 
 # This is a function used for returning the list of users. GET/api/users | 
-# I am using users_schema which is an instance of the Marshmallow UserSchema class (models.py) that was created with the parameter many=True. 
+# I am using users_detail_schema which is an instance of the Marshmallow UserSchema class (models.py) that was created with the parameter many=True. 
 # With this parameter you tell UserSchema to expect an iterable to serialize. 
 # This is important because the users variable contains a list of database items.
 def read_all():

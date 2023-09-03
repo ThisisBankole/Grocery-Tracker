@@ -198,65 +198,6 @@ def inject_datetime():
     return {'datetime': datetime, 'timedelta': timedelta}  
 
 
-# Receipts
-@app.route("/upload_receipt", methods=["POST"])
-@login_required
-def upload_receipt():
-   # Access the uploaded image
-   image = request.files['receipt_image']
-   
-   #convert image to text
-   text = pytesseract.image_to_string(Image.open(image))
-   
-   #Parse the receipt to extract grocery details
-   receipt_data = parse_receipt(text)
-   
-   user_id = request.args.get('user_id')
-   try:
-      process_receipts_and_add_groceries(user_id, receipt_data)
-      flash('Receipt uploaded successfully!', 'success')
-   except Exception as e:
-      flash(f'Failed to upload receipt: {str(e)}', 'danger')
-      
-def parse_receipt(new_text):
-   lines = new_text.split('\n')
-   items = []
-   #Define a multiple regex patterns to match the different formats of the receipt
-   patterns = [
-      re.compile(r'(?P<item>[\w\s]+)\s(?P<quantity>\d+)x\s\$(?P<price>[\d.]+)'),
-      #compile a regex pattern to match the format: item $price
-      re.compile(r'(?P<item>[\w\s]+)\s\$(?P<price>[\d.]+)'),
-   ]
-   
-   for line in lines:
-      matched = False
-      for pattern in patterns:
-         match = pattern.match(line)
-         if match:
-            item = match.group('item').strip()
-            quantity = int(match.group('quantity')) if 'quantity' in match.groupdict() else 1
-            price = float(match.group('price'))
-            items.append({
-               'item': item,
-               'quantity': quantity,
-               'price': price
-               })
-            matched = True
-            break
-         
-         # Heuristic fallback if no patterns matched
-         if not matched:
-            parts = line.split()
-            if '$' in parts[-1]:
-               price = float(parts[-1].replace('$', ''))
-               item = ' '.join(parts[:-1])
-               items.append({
-                  'item': item,
-                  'quantity': 1,
-                  'price': price
-                  })
-               
-   return items
             
       
 
