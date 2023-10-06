@@ -1,6 +1,6 @@
 .env
 scraper.py
-script.py
-alembic/
-init_db.py
+
+
+
 venv/

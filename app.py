@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 from edamam_api import get_groceries_from_edamam
 from receipts import process_receipts_and_add_groceries
 import re
-
+from init_db import init_db
 #logging.basicConfig(level=logging.DEBUG)
 
    
@@ -202,6 +202,7 @@ def inject_datetime():
       
 
 if __name__ == "__main__":
+   init_db()
    port = int(os.environ.get("PORT", 8000))
    app.run(host="0.0.0.0", port=port, debug=True)
     
