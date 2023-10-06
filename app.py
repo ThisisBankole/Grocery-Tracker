@@ -13,8 +13,6 @@ from groceries import add, read_items, update, delete
 from forms import RegisterForm, LoginForm, GroceryForm
 from datetime import datetime, timedelta
 from edamam_api import get_groceries_from_edamam
-import pytesseract
-from PIL import Image
 from receipts import process_receipts_and_add_groceries
 import re
 
@@ -29,6 +27,8 @@ config.connex_app.add_api(config.basedir / "swagger.yml")
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
+
+
 
 
 

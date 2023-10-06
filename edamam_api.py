@@ -7,8 +7,8 @@ load_dotenv()
 
 
 EDAMAM_API_ENDPOINT = "https://api.edamam.com/api/food-database/v2/parser"
-APP_ID = os.getenv("YOUR_APP_ID")   # Replace with your App ID from Edamam
-APP_KEY = os.getenv("YOUR_APP_KEY") # Replace with your App Key from Edamam
+APP_ID = os.getenv("APP_ID")   # Replace with your App ID from Edamam
+APP_KEY = os.getenv("APP_KEY") # Replace with your App Key from Edamam
 
 def get_groceries_from_edamam(query):
     """
@@ -27,6 +27,7 @@ def get_groceries_from_edamam(query):
     }
     response = requests.get(EDAMAM_API_ENDPOINT, params=parameters)
     response_data = response.json()
+    #print(response_data)
 
     # Extracting the grocery names from the response
     groceries = [item['food']['label'] for item in response_data['hints']]

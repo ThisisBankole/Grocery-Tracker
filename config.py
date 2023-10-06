@@ -23,11 +23,11 @@ app = connex_app.app
 
 
 # This tells SQLAlchemy to use SQLite as the database and a file named shopa.db in the current directory as the database file.
-#app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DB_URL').replace('postgres://', 'postgresql://')
-if os.environ.get('FLASK_ENV') == 'development':
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('LOCAL_DB_URL').replace('postgres://', 'postgresql://')
-else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('PROD_DB_URL').replace('postgres://', 'postgresql://')
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR, 'shopa.db')
+
+#app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///shopa.db'
+
 
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
