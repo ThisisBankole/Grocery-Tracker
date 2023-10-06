@@ -1,0 +1,17 @@
+name: app
+type: python:3.9
+disk: 512
+
+
+hooks:
+  build: |
+    pip install -r requirements.txt
+
+web:
+  commands:
+    start: python app.py --host 127.0.0.1 --port $PORT
+  locations:
+    "/":
+      root: "public/"
+      allow: false
+      passthru: true
