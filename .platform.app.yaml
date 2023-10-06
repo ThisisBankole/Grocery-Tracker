@@ -15,3 +15,6 @@ web:
       root: "public/"
       allow: false
       passthru: true
+
+mounts:
+  "/tmp": "shared:files/tmp"
