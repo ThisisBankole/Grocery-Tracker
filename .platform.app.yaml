@@ -2,6 +2,11 @@ name: app
 type: python:3.9
 disk: 512
 
+# Environment variables (without values, since they are set in Platform.sh dashboard)
+environment:
+  SECRET_KEY: 
+  APP_ID: 
+  APP_KEY: 
 
 hooks:
   build: |
@@ -9,7 +14,7 @@ hooks:
 
 web:
   commands:
-    start: python app.py --host 127.0.0.1 --port $PORT
+    start: python app.py #--host 127.0.0.1 --port $PORT
   locations:
     "/":
       root: "public/"
