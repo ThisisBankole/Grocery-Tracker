@@ -31,6 +31,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tm
 
 
 
+
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 # This initializes SQLAlchemy by passing the app configuration information to SQLAlchemy and assigning the result to a db variable.

@@ -34,7 +34,9 @@
     <div class="container">
         <h1 class="mb-4">Dashboard</h1>
 
-        <form action="{{ url_for('dashboard') }}" method="post" class="mb-4">
+
+
+        <form id="groceryForm" action="{{ url_for('dashboard') }}" method="post" class="mb-4" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.item.label }}
@@ -53,6 +55,11 @@
             <div class="form-group">
                 {{ form.price.label }}
                 {{ form.price(class="form-control" ) }}
+            </div>
+
+            <div class="form-group">
+                {{ form.receipt.label }}
+                {{ form.receipt(class="form-control-file") }}
             </div>
 
             {{ form.submit(class="btn btn-primary") }}
@@ -125,6 +132,20 @@
        
 
         // ... existing code ...
+
+
+
+
+    document.getElementById('groceryForm').addEventListener('submit', function() {
+        const receiptInput = document.querySelector('[name="receipt"]');
+        if (receiptInput.files.length > 0) {
+            // If a file is selected, change the form action to process_receipt
+            this.action = "{{ url_for('process_receipt') }}";
+        } else {
+            // If no file is selected, keep the form action as dashboard
+            this.action = "{{ url_for('dashboard') }}";
+        }
+    });
 
 
 </script>

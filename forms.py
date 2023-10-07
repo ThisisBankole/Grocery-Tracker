@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, DateField, SubmitField, IntegerField, DecimalField
 from wtforms.validators import InputRequired, Length, ValidationError
-
+from flask_wtf.file import FileField, FileAllowed
 
 # Register Form
 class RegisterForm(FlaskForm):
@@ -21,7 +21,15 @@ class LoginForm(FlaskForm):
 
 #Item Form
 class GroceryForm(FlaskForm):
-    item = StringField(label= "Name of Item", validators=[InputRequired(), Length(min=2, max=200)],render_kw={"placeholder" : "Name of Item"} )
+    item = StringField(label= "Name of Item",render_kw={"placeholder" : "Name of Item"} )
     quantity = IntegerField(label= "Quantity" , default=0, render_kw={"placeholder" : "Quantity"} )
     price = DecimalField(label= "Amount", default=0.0, render_kw={"placeholder" : "Amount"})
+    receipt = FileField(label="Upload Receipt", validators=[FileAllowed(['jpg', 'png', 'pdf'])])
     submit = SubmitField("Add")
+    
+
+class VerifyGroceryForm(FlaskForm):
+    item = StringField('Item')
+    quantity = IntegerField('Quantity')
+    price = DecimalField('Price')
+    submit = SubmitField('Save')
