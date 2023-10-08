@@ -1,4 +1,4 @@
 # The name of the service container. Must be unique within a project.
 dbmysql:
     type: mysql:10.4
-    disk: 512
+    disk: 256

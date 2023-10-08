@@ -26,7 +26,7 @@ app = connex_app.app
 if os.environ.get('FLASK_ENV') == 'production':
     from platformshconfig import Config
     config = Config()
-    credentials = config.credentials('mysqldatabase')  # Assuming 'mysqldatabase' is the name of your MySQL service in Platform.sh
+    credentials = config.credentials('database')  # Assuming 'mysqldatabase' is the name of your MySQL service in Platform.sh
 
     app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{credentials['username']}:{credentials['password']}@{credentials['host']}:{credentials['port']}/{credentials['path']}"
 else:
