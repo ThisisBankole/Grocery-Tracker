@@ -27,15 +27,19 @@ app = connex_app.app
 
 # This tells SQLAlchemy to use SQLite as the database and a file named shopa.db in the current directory as the database file.
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
-if os.getenv('PLATFORM_RELATIONSHIPS'):
-    relationships = json.loads(os.getenv('PLATFORM_RELATIONSHIPS'))
+platform_relationships = os.getenv('PLATFORM_RELATIONSHIPS')
+if platform_relationships:
+    try:
+        relationships = json.loads(platform_relationships)
     
-    #extract the postgresql connection string
-    database_credentials = relationships['database'][0]
     
-    #construct the sqlalchemy connection string
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{database_credentials['username']}:{database_credentials['password']}@{database_credentials['host']}:{database_credentials['port']}/{database_credentials['path']}"
+        #extract the postgresql connection string
+        database_credentials = relationships['database'][0]
+    
+        #construct the sqlalchemy connection string
+        app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{database_credentials['username']}:{database_credentials['password']}@{database_credentials['host']}:{database_credentials['port']}/{database_credentials['path']}"
+    except json.decoder.JSONDecodeError:
+        print("Error decoding PLATFORM_RELATIONSHIPS JSON")
     
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tmp', 'shopa.db')
