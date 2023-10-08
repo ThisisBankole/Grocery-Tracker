@@ -23,6 +23,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import re
 from flask_migrate import Migrate
 from mysql import usage
+import sys
 
 
 #logging.basicConfig(level=logging.DEBUG)
@@ -301,11 +302,22 @@ def inject_datetime():
             
       
 
+
+
 if __name__ == "__main__":
-   #init_db()
-   usage()
-   port = int(os.environ.get("PORT", 8000))
-   app.run(host="0.0.0.0", port=port, debug=True)
+    # Determine if a specific command was provided
+    command = sys.argv[1] if len(sys.argv) > 1 else None
+
+    if command == "migrate":
+        # Run the migrations without starting the server
+        usage()  # Assuming usage() runs the migrations
+    elif command == "run" or command is None:
+        # Start the Flask server
+        port = int(os.environ.get("PORT", 8000))
+        app.run(host="0.0.0.0", port=port, debug=False)  # Debug mode off for production
+    else:
+        print(f"Unknown command: {command}")
+
     
 #if __name__ == '__main__':
      #port = int(os.environ.get('PORT', 5000))  # Use PORT if it's there, otherwise default to 5000 for local development.
