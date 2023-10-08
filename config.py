@@ -22,13 +22,19 @@ basedir = pathlib.Path(__file__).parent.resolve()
 connex_app = connexion.App(__name__, specification_dir=basedir)
 app = connex_app.app
 
+# Check if the app is running in production (on Platform.sh)
+if os.environ.get('FLASK_ENV') == 'production':
+    from platformshconfig import Config
+    config = Config()
+    credentials = config.credentials('mysqldatabase')  # Assuming 'mysqldatabase' is the name of your MySQL service in Platform.sh
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{credentials['username']}:{credentials['password']}@{credentials['host']}:{credentials['port']}/{credentials['path']}"
+else:
+    # Use SQLite for local development
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR, 'tmp', 'shopa.db')
 
 
-
-# This tells SQLAlchemy to use SQLite as the database and a file named shopa.db in the current directory as the database file.
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tmp', 'shopa.db')
 
 #app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///shopa.db'
 
