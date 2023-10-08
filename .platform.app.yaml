@@ -8,7 +8,7 @@ hooks:
     pip install -r requirements.txt
  
 relationships:
-  mysqldatabase: "dbmysql:mysql"
+  database: "dbmysql:mysql"
 
 
 web:
