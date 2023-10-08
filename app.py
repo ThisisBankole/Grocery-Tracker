@@ -29,7 +29,7 @@ from flask_migrate import Migrate
 #Initializes Migrate for database migration support
 migrate = Migrate(app, db)
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+UPLOAD_FOLDER = '/tmp/uploads'
 MAX_UPLOAD_SIZE = 16 * 1024 * 1024  # 16MB
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
