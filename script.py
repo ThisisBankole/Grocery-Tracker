@@ -21,6 +21,8 @@ grocery_table = Table(
 
 # Create an SQLite engine in echo mode
 engine = create_engine('sqlite:///:memory:', echo=True)
+#create a mysql engine in echo mode
+
 
 # This will print the SQL for the table creation
 metadata.create_all(engine)

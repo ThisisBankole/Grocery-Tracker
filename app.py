@@ -310,7 +310,7 @@ if __name__ == "__main__":
 
     if command == "migrate":
         # Run the migrations without starting the server
-        usage()  # Assuming usage() runs the migrations
+        init_db()  # Assuming usage() runs the migrations
     elif command == "run" or command is None:
         # Start the Flask server
         port = int(os.environ.get("PORT", 8000))
