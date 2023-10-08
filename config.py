@@ -43,7 +43,7 @@ if platform_relationships:
             print("The key 'database' does not exist in PLATFORM_RELATIONSHIPS.")
         
     except json.decoder.JSONDecodeError as e:
-        print("Error decoding PLATFORM_RELATIONSHIPS JSON: {e}")
+        print(f"Error decoding PLATFORM_RELATIONSHIPS JSON: {e}")
     
 else:
     app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tmp', 'shopa.db')
