@@ -21,7 +21,7 @@ from PIL import Image
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import SQLAlchemyError
 import re
-from flask_migrate import Migrate
+
 from mysql import usage
 import sys
 
@@ -29,7 +29,7 @@ import sys
 #logging.basicConfig(level=logging.DEBUG)
 
 #Initializes Migrate for database migration support
-migrate = Migrate(app, db)
+
 
 UPLOAD_FOLDER = '/tmp/uploads'
 MAX_UPLOAD_SIZE = 16 * 1024 * 1024  # 16MB

@@ -10,7 +10,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, DateField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
-
+from flask_migrate import Migrate
 import os
 import json
 
@@ -50,7 +50,7 @@ app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 db=SQLAlchemy(app)
 # This initializes Marshmallow and allows it to work with the SQLAlchemy components attached to the app.
 ma=Marshmallow(app)
-
+migrate = Migrate(app, db)
 
 #This code defines a User class which inherits from UserMixin. UserMixin is a helper class in Flask-Login that includes default implementations for user object properties and methods like is_authenticated, is_active, etc.
 # The User class has a constructor (__init__) that takes a dictionary as a parameter and initializes the object's id, email, and password attributes based on the dictionary.
