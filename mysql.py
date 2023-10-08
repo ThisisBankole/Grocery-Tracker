@@ -56,7 +56,7 @@ def usage():
         conn.close()
     except Exception as e:
         print(e)
-        print("Database connection failed")
+        print("Database connection failed due to above error.")
         
     
             
