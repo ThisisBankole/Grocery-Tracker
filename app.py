@@ -305,18 +305,12 @@ def inject_datetime():
 
 
 if __name__ == "__main__":
-    # Determine if a specific command was provided
-    command = sys.argv[1] if len(sys.argv) > 1 else None
-
-    if command == "migrate":
-        # Run the migrations without starting the server
-        init_db()  # Assuming usage() runs the migrations
-    elif command == "run" or command is None:
-        # Start the Flask server
-        port = int(os.environ.get("PORT", 8000))
-        app.run(host="0.0.0.0", port=port, debug=False)  # Debug mode off for production
+    # Check for a "migrate" argument
+    if "migrate" in sys.argv:
+        init_db()
     else:
-        print(f"Unknown command: {command}")
+        port = int(os.environ.get("PORT", 8000))
+        app.run(host="0.0.0.0", port=port, debug=False)
 
     
 #if __name__ == '__main__':
