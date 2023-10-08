@@ -22,6 +22,7 @@ from werkzeug.utils import secure_filename
 from sqlalchemy.exc import SQLAlchemyError
 import re
 from flask_migrate import Migrate
+from mysql import usage
 
 
 #logging.basicConfig(level=logging.DEBUG)
@@ -301,7 +302,8 @@ def inject_datetime():
       
 
 if __name__ == "__main__":
-   init_db()
+   #init_db()
+   usage()
    port = int(os.environ.get("PORT", 8000))
    app.run(host="0.0.0.0", port=port, debug=True)
     
