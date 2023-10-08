@@ -14,9 +14,9 @@ def usage():
             user=credentials['username'],
             password=credentials['password'])
             
+        cur = conn.cursor()
             
-            
-        sql = '''
+        sql_users = '''
             
                     CREATE TABLE IF NOT EXISTS `users` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -29,11 +29,11 @@ def usage():
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             
                     '''
-        cur = conn.cursor()
-        cur.execute(sql)
+        
+        cur.execute(sql_users)
             
             
-        sql = ''' 
+        sql_groceries = ''' 
                   
                   CREATE TABLE IF NOT EXISTS `grocery` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -50,7 +50,8 @@ def usage():
                   
                   '''
         
-        cur.execute(sql)
+        cur.execute(sql_groceries)
+        
         conn.commit()
         cur.close()
         conn.close()
@@ -58,6 +59,9 @@ def usage():
         print(e)
         print("Database connection failed due to above error.")
         
+        
+        
+
     
             
             

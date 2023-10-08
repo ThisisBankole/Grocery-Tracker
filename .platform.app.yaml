@@ -3,13 +3,6 @@ type: python:3.9
 disk: 512
 
 
-hooks:
-  build: |
-    pip install -r requirements.txt
- 
-relationships:
-  database: "mysqldatabase:mysql"
-
 variables:
   env:
     FLASK_ENV: 'production'
@@ -17,12 +10,24 @@ variables:
 web:
   commands:
     start: python app.py #--host 127.0.0.1 --port $PORT
-  locations:
+
+hooks:
+  build: |
+    pip install -r requirements.txt
+  deploy: |
+    python app.py db upgrade
+    
+ 
+relationships:
+  database: "mysqldatabase:mysql"
+
+
+locations:
     "/":
       root: "public/"
       allow: false
       passthru: true
 
-mounts:
-  "/tmp": "shared:files/tmp"
+#mounts:
+  #"/tmp": "shared:files/tmp"
 
