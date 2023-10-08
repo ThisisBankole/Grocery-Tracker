@@ -3,7 +3,7 @@ from platformshconfig import Config
 
 def usage():
     config = Config()
-    credentials = config.credentials('database')
+    credentials = config.credentials('mysqldatabase')
     
     
     try:

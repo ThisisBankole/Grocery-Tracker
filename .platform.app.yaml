@@ -7,6 +7,9 @@ hooks:
   build: |
     pip install -r requirements.txt
  
+relationships:
+  mysqldatabase: "dbmysql:mysql"
+
 
 web:
   commands:
@@ -20,5 +23,3 @@ web:
 mounts:
   "/tmp": "shared:files/tmp"
 
-relationships:
-  mysqldatabase: "dbmysql:mysql"
