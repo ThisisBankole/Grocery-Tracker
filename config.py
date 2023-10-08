@@ -27,26 +27,8 @@ app = connex_app.app
 
 # This tells SQLAlchemy to use SQLite as the database and a file named shopa.db in the current directory as the database file.
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-platform_relationships = os.getenv('PLATFORM_RELATIONSHIPS')
-if platform_relationships:
-    try:
-        relationships = json.loads(platform_relationships)
-    
-        if 'database' in relationships:
-            #extract the postgresql connection string
-            database_credentials = relationships['database'][0]
-            # Log the extracted database credentials (without password for security)
-            print(f"Extracted database details: Host - {database_credentials['host']}, Port - {database_credentials['port']}, Username - {database_credentials['username']}, Database - {database_credentials['path']}")
-            #construct the sqlalchemy connection string
-            app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{database_credentials['username']}:{database_credentials['password']}@{database_credentials['host']}:{database_credentials['port']}/{database_credentials['path']}"
-        else:
-            print("The key 'database' does not exist in PLATFORM_RELATIONSHIPS.")
-        
-    except json.decoder.JSONDecodeError as e:
-        print(f"Error decoding PLATFORM_RELATIONSHIPS JSON: {e}")
-    
-else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tmp', 'shopa.db')
+
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tmp', 'shopa.db')
 
 #app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///shopa.db'
 

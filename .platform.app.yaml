@@ -6,8 +6,7 @@ disk: 512
 hooks:
   build: |
     pip install -r requirements.txt
-  deploy: |
-    flask db upgrade
+ 
 
 web:
   commands:
@@ -18,7 +17,6 @@ web:
       allow: false
       passthru: true
 
-#mounts:
-  #"/tmp": "shared:files/tmp"
-  relationships:
-    database: "dbpostgres:postgresql"
+mounts:
+  "/tmp": "shared:files/tmp"
+  
