@@ -10,8 +10,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, DateField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
-from flask_migrate import Migrate
+
 import os
+import json
 
 load_dotenv()
 
@@ -22,11 +23,25 @@ connex_app = connexion.App(__name__, specification_dir=basedir)
 app = connex_app.app
 
 
+
+
 # This tells SQLAlchemy to use SQLite as the database and a file named shopa.db in the current directory as the database file.
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tmp', 'shopa.db')
+
+if os.getenv('PLATFORM_RELATIONSHIPS'):
+    relationships = json.loads(os.getenv('PLATFORM_RELATIONSHIPS'))
+    
+    #extract the postgresql connection string
+    database_credentials = relationships['database'][0]
+    
+    #construct the sqlalchemy connection string
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{database_credentials['username']}:{database_credentials['password']}@{database_credentials['host']}:{database_credentials['port']}/{database_credentials['path']}"
+    
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR,'tmp', 'shopa.db')
 
 #app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///shopa.db'
+
 
 
 
@@ -39,8 +54,7 @@ app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
 db=SQLAlchemy(app)
 # This initializes Marshmallow and allows it to work with the SQLAlchemy components attached to the app.
 ma=Marshmallow(app)
-#Initializes Migrate for database migration support
-migrate = Migrate(app, db)
+
 
 #This code defines a User class which inherits from UserMixin. UserMixin is a helper class in Flask-Login that includes default implementations for user object properties and methods like is_authenticated, is_active, etc.
 # The User class has a constructor (__init__) that takes a dictionary as a parameter and initializes the object's id, email, and password attributes based on the dictionary.

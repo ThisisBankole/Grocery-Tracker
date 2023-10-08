@@ -1,0 +1,65 @@
+/* Base table styles */
+.table-custom {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Table header styles */
+.table-custom thead {
+    background-color: #f7f7f7;
+}
+
+.table-custom th {
+    padding: 10px 15px;
+    border: 1px solid #e1e1e1;
+    text-align: left;
+}
+
+/* Table body styles */
+.table-custom tbody tr {
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.table-custom td {
+    padding: 10px 15px;
+    border-left: 1px solid #e1e1e1;
+}
+
+.table-custom td:first-child {
+    border-left: none;
+}
+
+
+/* Existing styles remain unchanged... */
+
+/* Mobile view adjustments */
+@media (max-width: 620px) {
+    .table-custom thead {
+        display: none;  /* Hide headers */
+    }
+
+    .table-custom td, .table-custom th.mobile-hide {
+        display: none; /* Hide unwanted columns in mobile view */
+    }
+
+    .table-custom td {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .table-custom td:before {
+        content: attr(data-label);
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .table-custom td[data-label="Actions"] a, 
+    .table-custom td[data-label="Actions"] form {
+        display: inline-block; /* Side-by-side buttons */
+    }
+}
+

@@ -1,5 +1,5 @@
 from datetime import datetime
-from config import db, ma, migrate, UserMixin
+from config import db, ma, UserMixin
 from marshmallow import fields
 from shared import bcrypt
 
