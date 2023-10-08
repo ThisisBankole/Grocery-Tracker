@@ -2,7 +2,6 @@ name: app
 type: python:3.9
 disk: 512
 
-
 variables:
   env:
     FLASK_ENV: 'production'
@@ -17,17 +16,5 @@ hooks:
   deploy: |
     python app.py db upgrade
     
- 
 relationships:
   database: "mysqldatabase:mysql"
-
-
-locations:
-    "/":
-      root: "public/"
-      allow: false
-      passthru: true
-
-#mounts:
-  #"/tmp": "shared:files/tmp"
-
