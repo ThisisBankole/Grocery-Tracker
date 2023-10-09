@@ -6,10 +6,10 @@
   type: redirect
   to: "https://{default}/"
 
-"https://{default}/ui":
+"https://{default}/api/":
   type: upstream
   upstream: "app:http"
 
-"https://{default}/ui/":
+"https://{default}/api":
   type: upstream
   upstream: "app:http"
