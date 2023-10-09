@@ -37,6 +37,10 @@ MAX_UPLOAD_SIZE = 16 * 1024 * 1024  # 16MB
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_SIZE
 
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
+
 config.connex_app.add_api(config.basedir / "swagger.yml")
 
 # login_manager.init_app(app)
