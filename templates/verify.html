@@ -23,9 +23,9 @@
             <tbody>
                 {% for grocery in extracted_groceries %}
                 <tr>
-                    <td> <input type="text" name="item[]" value="{{ grocery.item }}" class="form-control"> </td>
-                    <td><input type="text" name="quantity[]" value="{{ grocery.quantity }}" class="form-control"></td>
-                    <td><input type="text" name="price[]" value="{{ grocery.price }}" class="form-control"></td>
+                    <td> <input type="text" name="item[]" value="{{ grocery.item }}" class="form-control" required> </td>
+                    <td><input type="text" name="quantity[]" value="{{ grocery.quantity }}" class="form-control" required></td>
+                    <td><input type="text" name="price[]" value="{{ grocery.price }}" class="form-control" required></td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger delete-row">Delete</button>
                     </td>
