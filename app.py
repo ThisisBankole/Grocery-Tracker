@@ -21,8 +21,6 @@ from PIL import Image
 from werkzeug.utils import secure_filename
 from sqlalchemy.exc import SQLAlchemyError
 import re
-
-from mysql import usage
 import sys
 
 
@@ -309,7 +307,6 @@ def inject_datetime():
 
 
 if __name__ == "__main__":
-        init_db()
         port = int(os.environ.get("PORT", 8000))
         app.run(host="0.0.0.0", port=port, debug=False)
 

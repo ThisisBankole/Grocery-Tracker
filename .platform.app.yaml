@@ -10,10 +10,13 @@ web:
 hooks:
   build: |
     pip install -r requirements.txt
-    apt-get update
-    apt-get install -y tesseract-ocr
+  deploy: |
+    python init_db.py
+  
   
 variables:
     env:
         DATABASE_URL: 'postgresql://postgres:password@localhost:5432/postgres'
 
+relationships:
+    postgresdatabase: "dbpostgres:postgresql"

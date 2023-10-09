@@ -13,6 +13,7 @@ from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 import os
 import json
+import base64
 
 load_dotenv()
 
@@ -25,7 +26,13 @@ app = connex_app.app
 # Check if the app is running in production (on Platform.sh)
 # Use SQLite for local development
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL') 
+
+if os.getenv('PLATFORM_BRANCH'):
+    relationships = json.loads(base64.b64decode(os.environ.get('PLATFORM_RELATIONSHIPS')).decode('utf-8'))
+    db_relationship = relationships['postgresdatabase'][0]
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{db_relationship['username']}:{db_relationship['password']}@{db_relationship['host']}:{db_relationship['port']}/{db_relationship['path']}"
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL') 
 
 #'sqlite:///' + os.path.join(BASE_DIR, 'tmp', 'shopa.db')
 

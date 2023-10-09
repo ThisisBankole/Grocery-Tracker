@@ -1,4 +1,8 @@
 from sqlalchemy import ForeignKey, create_engine, MetaData, Table, Column, Integer, String, DateTime, func
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 metadata = MetaData()
 
@@ -19,9 +23,8 @@ grocery_table = Table(
     Column('timestamp', DateTime, default=func.now(), onupdate=func.now())
 )
 
-# Create an SQLite engine in echo mode
-engine = create_engine('sqlite:///:memory:', echo=True)
-#create a mysql engine in echo mode
+DATABASE_URL = os.environ.get('DATABASE_URL')
+engine = create_engine(DATABASE_URL, echo=True)
 
 
 # This will print the SQL for the table creation
