@@ -1,9 +1,12 @@
-from config import db
+#from shared import db
 from flask import abort, make_response
 from models import User, user_create_schema, user_detail_schema
 import jwt
-from shared import secret_key, bcrypt
+from shared import bcrypt
 from datetime import datetime, timedelta
+from extension import db
+from config import app
+secret_key = app.config["SECRET_KEY"]
 
 
 # This is a function used for returning the list of users. GET/api/users | 

@@ -14,10 +14,19 @@ from flask_migrate import Migrate
 import os
 import json
 import base64
+from shared import bcrypt
+from extension import db, ma
+
 
 load_dotenv()
 
+# This creates the variable basedir pointing to the directory that the program is running in.
+basedir = pathlib.Path(__file__).parent.resolve()
+# This uses the basedir variable to create the Connexion app instance and give it the path to the directory that contains your specification file.
+connex_app = connexion.App(__name__, specification_dir=basedir, options={"swagger_ui": True})
+app = connex_app.app
 
+connex_app.add_api(basedir / "swagger.yml")
 # Check if the app is running in production (on Platform.sh)
 # Use SQLite for local development
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -38,16 +47,16 @@ else:
 
 
 
-
-
-
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv('SECRET_KEY')
+
+db.init_app(app)
+bcrypt.init_app(app)
+ma.init_app(app)
 # This initializes SQLAlchemy by passing the app configuration information to SQLAlchemy and assigning the result to a db variable.
-db=SQLAlchemy(app)
+
 # This initializes Marshmallow and allows it to work with the SQLAlchemy components attached to the app.
-ma=Marshmallow(app)
+#ma=Marshmallow(app)
 migrate = Migrate(app, db)
 
 #This code defines a User class which inherits from UserMixin. UserMixin is a helper class in Flask-Login that includes default implementations for user object properties and methods like is_authenticated, is_active, etc.

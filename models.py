@@ -1,7 +1,8 @@
 from datetime import datetime
-from config import db, ma, UserMixin
+from config import UserMixin
 from marshmallow import fields
 from shared import bcrypt
+from extension import db, ma
 
 # This defines the Grocery class. 
 # Inheriting from db.Model from config.py file gives User the SQLAlchemy features to connect to the database and access its tables.

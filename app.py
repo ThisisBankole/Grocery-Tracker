@@ -1,13 +1,13 @@
 import os
 from flask import render_template, send_from_directory
 import requests
-from config import app, login_manager, db
+from config import app, login_manager,connex_app, login_manager
 import config
 from models import User, Grocery
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
-from shared import bcrypt, secret_key
+from shared import bcrypt
 from users import login_logic, create
 from groceries import add, read_items, update, delete
 from forms import RegisterForm, LoginForm, GroceryForm, VerifyGroceryForm
@@ -26,15 +26,13 @@ from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import FormRecognizerClient
 import connexion
 import pathlib
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+from extension import db, ma
+from config import app
+secret_key = app.config["SECRET_KEY"]
 
 
-
-
-basedir = pathlib.Path(__file__).parent.resolve()
-connex_app = connexion.App(__name__, specification_dir=basedir)
-app = connex_app.app
-
-config.connex_app.add_api(config.basedir / "swagger.yml")
 
 # login_manager.init_app(app)
 # This handles user loading on login

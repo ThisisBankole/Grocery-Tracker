@@ -4,7 +4,7 @@ from collections import defaultdict, OrderedDict
 from flask import abort, make_response
 from models import Grocery, User, grocery_schema
 import jwt
-from shared import secret_key, bcrypt
+#from shared import secret_key, bcrypt
 from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 
