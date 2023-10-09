@@ -22,6 +22,9 @@ from werkzeug.utils import secure_filename
 from sqlalchemy.exc import SQLAlchemyError
 import re
 import sys
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.formrecognizer import FormRecognizerClient
+
 
 
 #logging.basicConfig(level=logging.DEBUG)
@@ -164,41 +167,56 @@ def dashboard():
 @login_required
 def process_receipt():
    form = GroceryForm()
-   extracted_groceries = []
-   patterns = {
+   
+   #patterns = {
       #"aldi": r'([\w\s\-\/]+[a-zA-Z\s\-\/]+[\w])\s+([£€$]?\d+[,.]\d{2})',
       #"food_warehouse": r'(\d+)\s*([\w\s\-\/\d]+[\w])\s*([£€$]?\d+[,.]\d{2})\s*([£€$]?\d+[,.]\d{2})',
-      "general": r'([\w\s\-\/]*[a-zA-Z\s\-\/]+[\w\s\-\/]*)\s*[£€$®]*\s*([£€$]?\d+[,.]\d{2})'
-   }
+      #"general": r'([\w\s\-\/]*[a-zA-Z\s\-\/]+[\w\s\-\/]*)\s*[£€$®]*\s*([£€$]?\d+[,.]\d{2})'
+   #}
    if form.receipt.data:
-       
+      # Convert the uploaded file to bytes
+      receipt_bytes = form.receipt.data.read()
       
+      # Set up the Form Recognizer client
+      endpoint = os.environ.get("FORM_RECOGNIZER_ENDPOINT")
+      key = os.environ.get("FORM_RECOGNIZER_KEY")
+      
+      form_recognizer_client = FormRecognizerClient(endpoint, AzureKeyCredential(key))
+      
+      # Use the client to analyze the receipt
+      
+      poller = form_recognizer_client.begin_recognize_receipts(receipt_bytes)
+      result = poller.result()
+      
+      extracted_groceries = []
          #sace the receipt to the uploads folder
          #filename = secure_filename(form.receipt.data.filename)
          #filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
          #form.receipt.data.save(filepath)
          
-         #open the receipt and extract the text
-         image = Image.open(form.receipt.data)
-         text = pytesseract.image_to_string(image)
-         print(text)
-         
-         #process the extracted data
-         lines = text.split('\n')
-         for line in lines:
-            #regular expression to extract the item, quantity and price
-         
-            for pattern in patterns.values():
-               match = re.search(pattern, line)
-               if match:
-                  item, price = match.groups()
+      for receipt in result:
+         for name, field in receipt.fields.items():
+            if name == "Items":
+               for idx, items in enumerate(field.value):
+                  item_name ="Unknown"
+                  item_price = "0.00"
+                  
+                  # Ensure that items.value is not None before accessing its attributes
+                  if items and items.value:
+                     name_field = items.value.get("Name")
+                     total_price_field = items.value.get("TotalPrice")
+                     
+                     # Check if the fields exist and then get their values
+                     if name_field:
+                        item_name = name_field.value or "Unknown"
+                     if total_price_field:
+                        item_price = total_price_field.value or "0.00"
+                     
+                  # Add the extracted item to the list
                   extracted_groceries.append({
-                  "item": item.strip(),
-                  "price": price
-               })
-               break
-         #delete the receipt from the uploads folder
-        # os.remove(filepath)
+                     "item": item_name, 
+                     "price": item_price
+                     })
          #pass the extracted data to the frontend
          return render_template("verify.html", form=form, extracted_groceries=extracted_groceries)
    else:
