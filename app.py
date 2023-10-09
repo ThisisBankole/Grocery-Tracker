@@ -24,23 +24,15 @@ import re
 import sys
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import FormRecognizerClient
+import connexion
+import pathlib
 
 
 
-#logging.basicConfig(level=logging.DEBUG)
 
-#Initializes Migrate for database migration support
-
-
-UPLOAD_FOLDER = '/tmp/uploads'
-MAX_UPLOAD_SIZE = 16 * 1024 * 1024  # 16MB
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_SIZE
-
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
-
+basedir = pathlib.Path(__file__).parent.resolve()
+connex_app = connexion.App(__name__, specification_dir=basedir)
+app = connex_app.app
 
 config.connex_app.add_api(config.basedir / "swagger.yml")
 

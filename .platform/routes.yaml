@@ -6,6 +6,10 @@
   type: redirect
   to: "https://{default}/"
 
-"https://{default}/swagger-ui":
+"https://{default}/ui":
+  type: upstream
+  upstream: "app:http"
+
+"https://{default}/ui/":
   type: upstream
   upstream: "app:http"
