@@ -1,5 +1,7 @@
 .env
 scraper.py
+/venv
+
 
 
 
