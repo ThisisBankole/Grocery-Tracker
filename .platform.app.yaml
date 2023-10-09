@@ -13,4 +13,7 @@ hooks:
     apt-get update
     apt-get install -y tesseract-ocr
   
+variables:
+    env:
+        DATABASE_URL: 'postgresql://postgres:password@localhost:5432/postgres'
 

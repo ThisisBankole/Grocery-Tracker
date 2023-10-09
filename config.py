@@ -25,9 +25,12 @@ app = connex_app.app
 # Check if the app is running in production (on Platform.sh)
 # Use SQLite for local development
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///' + os.path.join(BASE_DIR, 'tmp', 'shopa.db')
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL') 
 
+#'sqlite:///' + os.path.join(BASE_DIR, 'tmp', 'shopa.db')
 
+#activate venv
+#source venv/bin/activate
 
 #app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///shopa.db'
 
