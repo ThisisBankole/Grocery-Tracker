@@ -2,10 +2,6 @@ name: app
 type: python:3.9
 disk: 512
 
-variables:
-  env:
-    FLASK_APP: 'app.py'
-    FLASK_ENV: 'production'
 
 web:
   commands:
@@ -14,8 +10,4 @@ web:
 hooks:
   build: |
     pip install -r requirements.txt
-  deploy: |
-    /Users/b/Documents/shopp/Grocery-Tracker/venv/bin/flask db upgrade
-    
-relationships:
-  database: "mysqldatabase:mysql"
+

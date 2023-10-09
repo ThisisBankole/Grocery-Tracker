@@ -1,4 +1,0 @@
-# The name of the service container. Must be unique within a project.
-mysqldatabase:
-    type: mysql:10.4
-    disk: 256
