@@ -10,8 +10,8 @@ web:
 hooks:
   build: |
     pip install -r requirements.txt
-  deploy: |
-    python init_db.py
+  #deploy: |
+    #python init_db.py
   
   
 variables:

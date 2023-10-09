@@ -174,12 +174,12 @@ def process_receipt():
        
       
          #sace the receipt to the uploads folder
-         filename = secure_filename(form.receipt.data.filename)
-         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-         form.receipt.data.save(filepath)
+         #filename = secure_filename(form.receipt.data.filename)
+         #filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+         #form.receipt.data.save(filepath)
          
          #open the receipt and extract the text
-         image = Image.open(filepath)
+         image = Image.open(form.receipt.data)
          text = pytesseract.image_to_string(image)
          print(text)
          
@@ -198,7 +198,7 @@ def process_receipt():
                })
                break
          #delete the receipt from the uploads folder
-         os.remove(filepath)
+        # os.remove(filepath)
          #pass the extracted data to the frontend
          return render_template("verify.html", form=form, extracted_groceries=extracted_groceries)
    else:
