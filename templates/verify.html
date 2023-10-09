@@ -9,7 +9,11 @@
 <body>
 
 <div class="container mt-5">
-    <h2>Verify Extracted Items</h2>
+    <div class="container mt-5">
+        <div class="mb-3">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    <h4>Verify Extracted Items</h4>
     <form action="{{ url_for('save_groceries') }}" method="post">
         {{ form.csrf_token }}
         <table class="table">
