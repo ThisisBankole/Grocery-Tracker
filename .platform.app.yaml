@@ -10,8 +10,11 @@ web:
 hooks:
   build: |
     pip install -r requirements.txt
-  #deploy: |
-    #python init_db.py
+  deploy: |
+    flask db upgrade
+    python table.py
+    python user_table.py
+    
   
   
 variables:
