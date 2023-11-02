@@ -3,14 +3,14 @@ from flask import render_template, send_from_directory
 import requests
 from config import app, login_manager,connex_app, login_manager
 import config
-from models import User, Grocery
+from models import User, Grocery, Account
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from shared import bcrypt
-from users import login_logic, create
+from users import login_logic, create, change_password, read_all_by_account
 from groceries import add, read_items, update, delete
-from forms import RegisterForm, LoginForm, GroceryForm, VerifyGroceryForm
+from forms import RegisterForm, LoginForm, GroceryForm, PasswordEmail, PasswordReset, AddUserForm
 from datetime import datetime, timedelta
 from edamam_api import get_groceries_from_edamam
 from receipts import process_receipts_and_add_groceries
@@ -30,9 +30,25 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from extension import db, ma
 from config import app
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from flask_migrate import Migrate
+
 secret_key = app.config["SECRET_KEY"]
 
 
+# Setup Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = os.environ.get("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PASSWORD")
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+
+mail = Mail(app)
+
+# Setup itsdangerous
+serializer = URLSafeTimedSerializer(secret_key)
 
 # login_manager.init_app(app)
 # This handles user loading on login
@@ -40,6 +56,8 @@ secret_key = app.config["SECRET_KEY"]
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+
+migrate = Migrate(app, db)
 
 
 
@@ -134,7 +152,8 @@ def dashboard():
                "user_id": current_user.id,
                "item": form.item.data,
                "quantity": form.quantity.data,
-               "price": form.price.data
+               "price": form.price.data,
+               "account_id": current_user.account_id 
             }
             response = add(result)
          
@@ -144,7 +163,7 @@ def dashboard():
             else:
                flash('Something went wrong', 'warning')
          
-   grouped_groceries = read_items(current_user.id)
+   grouped_groceries = read_items(current_user.account_id)
    now = datetime.utcnow().date().strftime('%Y-%m-%d')
    yesterday = (datetime.utcnow() - timedelta(days=1)).strftime('%Y-%m-%d')
    
@@ -170,8 +189,12 @@ def process_receipt():
       # Set up the Form Recognizer client
       endpoint = os.environ.get("FORM_RECOGNIZER_ENDPOINT")
       key = os.environ.get("FORM_RECOGNIZER_KEY")
+            # Display the value of the 'key' variable
+
       
       form_recognizer_client = FormRecognizerClient(endpoint, AzureKeyCredential(key))
+      print(f"Type of key: {type(key)}")  # Check the type of the 'key' variable
+      print(f"Value of key: {key}") 
       
       # Use the client to analyze the receipt
       
@@ -283,6 +306,8 @@ def edit_grocery(grocery_id):
 
     return render_template('edit.html', form=form, item=grocery)
 
+
+
 #Delete
 @app.route("/delete/<int:grocery_id>", methods=["POST"])
 @login_required
@@ -303,14 +328,102 @@ def search_groceries():
     groceries = get_groceries_from_edamam(query)
     return jsonify({'groceries': groceries})
  
+
+#Reset Password
+@app.route('/send_mail', methods=['GET','POST'])
+def reset_password():
+   form = PasswordEmail()
+   
+   if request.method == 'POST' and form.validate_on_submit():
+      email = form.email.data
+      user = User.query.filter_by(email=email).first()
+      
+      if user:
+         token = serializer.dumps(email, salt='password-reset-salt')
+         reset_url = url_for('reset_with_token', token=token, _external=True)
+
+         msg = Message('Password Reset Request', sender=app.config['MAIL_USERNAME'] ,recipients=[email])
+         msg.body = f'Please click the following link to reset your password: {reset_url}'
+         mail.send(msg)
+
+         return redirect(url_for('login'))
+      
+      else:
+         return render_template('pass_email.html', message='Email does not exist.')
+   return render_template('pass_email.html', form=form)
+ 
+ 
+ #Reset Password with token
+@app.route('/reset/<token>', methods=['GET', 'POST'])
+def reset_with_token(token):
+   password_reset_form = PasswordReset()
+   
+   try:
+      email = serializer.loads(token, salt='password-reset-salt', max_age=3600)
+   except SignatureExpired:
+      return render_template('pass_reset.html', message='The token is expired.')
+   
+   user = User.query.filter_by(email=email).first()
+   
+   if user:
+      if request.method == 'POST' and password_reset_form.validate_on_submit():
+         change_password(user.id, password_reset_form.password.data)
+         return redirect(url_for('login'))
+      else:
+         return render_template('password.html', form=password_reset_form, token=token)
+      
+   else:
+      return render_template('password.html', message='Invalid token.', token=token)
+  
+ 
+ # Add user
+@app.route("/add_user", methods=["GET", "POST"])
+@login_required
+def add_user():
+   # Ensure the user is an admin
+   if not current_user:
+      flash("You don't have permission to add users.", 'danger')
+      return redirect(url_for('dashboard'))
+
+   form = AddUserForm()
+
+   if form.validate_on_submit():
+      # Create a new user object
+      new_user = User(
+         first_name=form.first_name.data,
+         last_name=form.last_name.data,
+         email=form.email.data,
+         password=bcrypt.generate_password_hash(form.password.data).decode('utf-8'),
+         account_id=current_user.account_id
+      )
+      db.session.add(new_user)
+      db.session.commit()
+
+      # Send an email to the new user to create their password
+      token = serializer.dumps(new_user.email, salt='password-reset-salt')
+      reset_url = url_for('reset_with_token', token=token, _external=True)
+
+      msg = Message('Create Your Password', sender=app.config['MAIL_USERNAME'], recipients=[new_user.email])
+      msg.body = f'Please click the following link to create your password: {reset_url}'
+      mail.send(msg)
+
+      flash('User added successfully.', 'success')
+      return redirect(url_for('dashboard'))
+
+   return render_template('add_user.html', form=form)
+
+#user list
+@app.route('/users')
+@login_required
+def user_management():
+   grouped_users = read_all_by_account(current_user.account_id)
+   return render_template('user.html', grouped_users=grouped_users)
+   
+ 
  
 @app.context_processor
 def inject_datetime():
     return {'datetime': datetime, 'timedelta': timedelta}  
-
-
-            
-      
 
 
 

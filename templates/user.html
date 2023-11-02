@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h4 class="my-4">User Management</h4>
+
+         <!-- Button to add a new user -->
+         <div class="text-left my-4">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" style="margin-right: 820px;"> Back to Dashboard</a>
+            <a href="{{ url_for('add_user') }}" class="btn btn-primary">Add User</a>
+            
+        </div>
+        <!-- Table for displaying list of users -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email Address</th>
+                    <th scope="col">Date Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- User data would go here -->
+                {% for date, users in grouped_users.items() %}
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.timestamp }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+       
+    </div>
+</body>
+</html>

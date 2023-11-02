@@ -23,7 +23,11 @@ load_dotenv()
 # This creates the variable basedir pointing to the directory that the program is running in.
 basedir = pathlib.Path(__file__).parent.resolve()
 # This uses the basedir variable to create the Connexion app instance and give it the path to the directory that contains your specification file.
-connex_app = connexion.App(__name__, specification_dir=basedir, options={"swagger_ui": True})
+connex_app = connexion.App(__name__, specification_dir=basedir, options={
+    "swagger_ui": True, 
+    #"swagger_url": "/api-docs"
+    
+    })
 app = connex_app.app
 
 connex_app.add_api(basedir / "swagger.yml")

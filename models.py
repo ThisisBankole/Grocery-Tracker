@@ -14,6 +14,7 @@ class Grocery(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     quantity = db.Column(db.Integer)
     price = db.Column(db.Float)
+    account_id = db.Column(db.Integer, db.ForeignKey('account.id')) 
 
     
     
@@ -37,6 +38,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow) 
+    account_id = db.Column(db.Integer, db.ForeignKey("account.id"))
     
     groceries = db.relationship (
         Grocery,
@@ -47,6 +49,13 @@ class User(db.Model, UserMixin):
         
     )
     
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        load_instance = True
+        sqla_session = db.session
+        include_relationships = False
+        include_fk = True
     
 class UserCreateSchema(ma.SQLAlchemyAutoSchema):
     password = fields.Str(load_only=True)
@@ -55,6 +64,8 @@ class UserCreateSchema(ma.SQLAlchemyAutoSchema):
         load_instance = True
         sqla_session = db.session
         include_relationships = False
+        include_fk = True
+
 
 class UserDetailSchema(ma.SQLAlchemyAutoSchema):
     password = fields.Str(load_only=True)
@@ -66,7 +77,28 @@ class UserDetailSchema(ma.SQLAlchemyAutoSchema):
         include_relationships = True
         
  
+ 
+class Account(db.Model):
+    __tablename__ = "account"
+    id = db.Column(db.Integer, primary_key=True)
+    users = db.relationship (
+        User,
+        backref = "account",
+        cascade = "all, delete, delete-orphan",
+        single_parent = True,
+        order_by = "desc(User.timestamp)",
+        lazy='dynamic'
+    )
     
+class AccountSchema(ma.SQLAlchemyAutoSchema):
+    users = fields.Nested(UserDetailSchema, many=True)
+    class Meta:
+        model = Account
+        load_instance = True
+        sqla_session = db.session
+        include_relationships = True
+        
+
 class GroceryItem(db.Model):
     __tablename__ = "grocery_item"
     id = db.Column(db.Integer, primary_key=True)
@@ -76,5 +108,8 @@ class GroceryItem(db.Model):
 user_create_schema = UserCreateSchema()
 user_detail_schema = UserDetailSchema(many=True)
 grocery_schema = GrocerySchema()
+account_schema = AccountSchema()
+user_schema = UserSchema()
+
 
 

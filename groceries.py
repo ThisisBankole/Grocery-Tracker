@@ -8,17 +8,22 @@ from datetime import datetime, timedelta
 from sqlalchemy.exc import IntegrityError
 
 
-def read_items(user_id):
-    grocery = Grocery.query.filter_by(user_id=user_id).all()
+def read_items(account_id):
+    #print(f"Reading items for account_id: {account_id}")
+    grocery = Grocery.query.filter_by(account_id=account_id).order_by(Grocery.timestamp.desc()).all()
+   # print(f"Retrieved {len(grocery)} groceries")
     grouped_grocery = defaultdict(list)
     
     for g in grocery:
         date_str = g.timestamp.strftime('%Y-%m-%d')
-        grouped_grocery[date_str].append(grocery_schema.dump(g))
+        grocery_data = grocery_schema.dump(g)
+        #print(f"Grocery data: {grocery_data}")
+        grouped_grocery[date_str].append(grocery_data)
+    
         
-    ordered_groceries = OrderedDict(sorted(grouped_grocery.items(), key=lambda t: t[0], reverse=True))
+    #ordered_groceries = OrderedDict(sorted(grouped_grocery.items(), key=lambda t: t[0], reverse=True))
         
-    return ordered_groceries
+    return grouped_grocery
 
 
 def read_item(grocery_id):

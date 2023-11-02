@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 info:
-  title: "Shopa API"
+  title: "Aki API"
   description: "An Api to keep track of grocery shopping"
   version: "1.0.0"
 
@@ -90,6 +90,14 @@ components:
       required: true
       schema:
         type: "integer"
+
+    account_id:
+      name: "account_id"
+      description: "unique identifier to get users that share an account"
+      in: path
+      required: true
+      schema:
+        type: "integer"
     
     
 
@@ -98,6 +106,20 @@ components:
 
 
 paths:
+
+  # A path for reading users that share an account
+  /users/{account_id}:
+    get:
+      operationId: "users.read_all_by_account"
+      tags:
+        - users
+      summary: "Read the list of users that share an account"
+      parameters:
+        - $ref: "#/components/parameters/account_id"
+      responses:
+        "200":
+          description: "Successfully retrieved users"
+
   /users:
     get:
       operationId: "users.read_all"
@@ -107,7 +129,6 @@ paths:
       responses:
         "200":
           description: "Successfully retrieved users"
-
     
     post: 
       operationId: "users.create"
@@ -127,6 +148,7 @@ paths:
           description: "User successfully created"
 
 # A method for changing user password
+  /users/{id}/password:
     patch:
       operationId: "users.change_password"
       tags:

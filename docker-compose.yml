@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    build: .  # Path to your Flask app's directory
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development  # Set the Flask environment (development, production, etc.)
+      - SECRET_KEY=secretkey  # Your Flask app's secret key
+      - DATABASE_URL=postgres://postgres:password@localhost/postgres # Database connection URL
+    depends_on:
+      - db  # This ensures that the 'db' service is started before the 'web' service
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=b  # Replace with your database username
+      - POSTGRES_PASSWORD=password  # Replace with your database password
+      - POSTGRES_DB=aki-db  # Replace with your database name
